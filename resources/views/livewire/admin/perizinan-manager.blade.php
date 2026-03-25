@@ -59,8 +59,7 @@
                                     <button wire:click="openDetail({{ $item->id }})" class="p-1.5 rounded-lg hover:bg-blue-50 text-blue-600" title="Lihat Detail">
                                         <span class="material-symbols-outlined text-[18px]!">visibility</span>
                                     </button>
-                                    <button type="button"
-                                            @click="Swal.fire({title:'Hapus Permohonan?',text:'Data permohonan dan dokumen terlampir akan dihapus permanen.',icon:'warning',showCancelButton:true,confirmButtonColor:'#dc2626',confirmButtonText:'Ya, Hapus',cancelButtonText:'Batal'}).then(r=>{if(r.isConfirmed)$wire.deletePerizinan({{ $item->id }})})"
+                                    <button wire:click="confirmDelete({{ $item->id }})"
                                             class="p-1.5 rounded-lg hover:bg-red-50 text-red-400 hover:text-red-600" title="Hapus">
                                         <span class="material-symbols-outlined text-[18px]!">delete</span>
                                     </button>
@@ -172,8 +171,7 @@
 
                 {{-- Action Buttons --}}
                 <div class="flex justify-between items-center pt-3 border-t border-gray-100">
-                    <button type="button"
-                            @click="Swal.fire({title:'Hapus Permohonan?',text:'Data akan dihapus permanen.',icon:'warning',showCancelButton:true,confirmButtonColor:'#dc2626',confirmButtonText:'Ya, Hapus',cancelButtonText:'Batal'}).then(r=>{if(r.isConfirmed)$wire.deletePerizinan({{ $detail->id }})})"
+                    <button wire:click="confirmDelete({{ $detail->id }})"
                             class="px-4 py-2.5 text-red-500 hover:bg-red-50 font-semibold rounded-xl text-sm flex items-center gap-1.5 transition">
                         <span class="material-symbols-outlined text-[16px]!">delete</span>
                         Hapus
@@ -185,6 +183,24 @@
                 </div>
             </div>
             @endif
+        </div>
+    </div>
+    @endif
+
+    {{-- Delete Confirm Modal --}}
+    @if($showDeleteConfirm)
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" wire:click="$set('showDeleteConfirm', false)"></div>
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center">
+            <span class="material-symbols-outlined text-[48px]! text-red-400 mb-3">warning</span>
+            <h3 class="text-lg font-bold text-gray-800 mb-2">Hapus Permohonan?</h3>
+            <p class="text-sm text-gray-500 mb-6">Data permohonan dan dokumen terlampir akan dihapus permanen.</p>
+            <div class="flex gap-3">
+                <button wire:click="$set('showDeleteConfirm', false)"
+                    class="flex-1 py-2.5 border border-gray-200 text-gray-600 font-semibold rounded-xl hover:bg-gray-50 text-sm">Batal</button>
+                <button wire:click="deletePerizinan"
+                    class="flex-1 py-2.5 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 text-sm">Hapus</button>
+            </div>
         </div>
     </div>
     @endif

@@ -111,12 +111,16 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'is-admin'])->group(
             $docs = $perizinan->dokumen_pendukung ?? [];
             abort_unless(isset($docs[$index]), 404);
             $path = $docs[$index];
-            abort_unless(Storage::disk('local')->exists($path), 404);
+
+            // Check local disk first (new uploads), then public disk (old uploads)
+            $disk = Storage::disk('local')->exists($path) ? 'local'
+                  : (Storage::disk('public')->exists($path) ? 'public' : null);
+            abort_unless($disk, 404);
 
             $extension = pathinfo($path, PATHINFO_EXTENSION) ?: 'pdf';
             $displayName = "dokumen_perizinan_{$perizinan->id}_" . ($index + 1) . ".{$extension}";
 
-            return Storage::disk('local')->response($path, $displayName);
+            return Storage::disk($disk)->response($path, $displayName);
         })->name('perizinan.dokumen');
     });
 

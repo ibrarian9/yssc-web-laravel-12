@@ -25,7 +25,7 @@ class MitraManager extends Component
     public function updatingSearch() { $this->resetPage(); }
     public function updatingFilterStatus() { $this->resetPage(); }
 
-    public function showDetail(int $id): void
+    public function openDetail(int $id): void
     {
         $this->selectedId = $id;
         $mitra = Mitra::find($id);

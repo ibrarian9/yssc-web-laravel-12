@@ -88,8 +88,7 @@
                                         <button wire:click="editAnggota({{ $a->id }})" class="p-1.5 rounded-lg hover:bg-blue-50 text-blue-600" title="Edit">
                                             <span class="material-symbols-outlined text-[18px]!">edit</span>
                                         </button>
-                                        <button type="button"
-                                                @click="Swal.fire({title:'Hapus Anggota?',text:'{{ $a->nama }} akan dihapus.',icon:'warning',showCancelButton:true,confirmButtonColor:'#dc2626',confirmButtonText:'Ya, Hapus',cancelButtonText:'Batal'}).then(r=>{if(r.isConfirmed)$wire.deleteAnggota({{ $a->id }})})"
+                                        <button wire:click="confirmDeleteAnggota({{ $a->id }})"
                                                 class="p-1.5 rounded-lg hover:bg-red-50 text-red-400 hover:text-red-600" title="Hapus">
                                             <span class="material-symbols-outlined text-[18px]!">delete</span>
                                         </button>
@@ -220,8 +219,7 @@
                         <button wire:click="editDivisi({{ $d->id }})" class="p-1.5 rounded-lg hover:bg-blue-50 text-blue-600">
                             <span class="material-symbols-outlined text-[18px]!">edit</span>
                         </button>
-                        <button type="button"
-                                @click="Swal.fire({title:'Hapus Divisi?',text:'{{ $d->nama }} akan dihapus. Pastikan tidak ada anggota di divisi ini.',icon:'warning',showCancelButton:true,confirmButtonColor:'#dc2626',confirmButtonText:'Ya, Hapus',cancelButtonText:'Batal'}).then(r=>{if(r.isConfirmed)$wire.deleteDivisi({{ $d->id }})})"
+                        <button wire:click="confirmDeleteDivisi({{ $d->id }})"
                                 class="p-1.5 rounded-lg hover:bg-red-50 text-red-400 hover:text-red-600">
                             <span class="material-symbols-outlined text-[18px]!">delete</span>
                         </button>
@@ -271,5 +269,23 @@
             </div>
         </div>
         @endif
+    @endif
+
+    {{-- Delete Confirm Modal --}}
+    @if($showDeleteConfirm)
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" wire:click="$set('showDeleteConfirm', false)"></div>
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center">
+            <span class="material-symbols-outlined text-[48px]! text-red-400 mb-3">warning</span>
+            <h3 class="text-lg font-bold text-gray-800 mb-2">Hapus {{ $deleteType === 'anggota' ? 'Anggota' : 'Divisi' }}?</h3>
+            <p class="text-sm text-gray-500 mb-6">Data yang dihapus tidak dapat dikembalikan.</p>
+            <div class="flex gap-3">
+                <button wire:click="$set('showDeleteConfirm', false)"
+                    class="flex-1 py-2.5 border border-gray-200 text-gray-600 font-semibold rounded-xl hover:bg-gray-50 text-sm">Batal</button>
+                <button wire:click="executeDelete"
+                    class="flex-1 py-2.5 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 text-sm">Hapus</button>
+            </div>
+        </div>
+    </div>
     @endif
 </div>

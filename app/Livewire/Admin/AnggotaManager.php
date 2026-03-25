@@ -31,6 +31,9 @@ class AnggotaManager extends Component
     public string $periodeSelesai = '';
     public bool $isActive = true;
     public int $urutan = 0;
+    public bool $showDeleteConfirm = false;
+    public ?int $deleteId = null;
+    public string $deleteType = 'anggota'; // anggota | divisi
 
     // Divisi form
     public bool $showDivisiForm = false;
@@ -116,10 +119,38 @@ class AnggotaManager extends Component
         $this->resetAnggotaForm();
     }
 
-    public function deleteAnggota(int $id): void
+    public function confirmDeleteAnggota(int $id): void
     {
-        AnggotaDevisi::findOrFail($id)->delete();
-        session()->flash('success', 'Anggota berhasil dihapus.');
+        $this->deleteId = $id;
+        $this->deleteType = 'anggota';
+        $this->showDeleteConfirm = true;
+    }
+
+    public function confirmDeleteDivisi(int $id): void
+    {
+        $d = Divisi::findOrFail($id);
+        if ($d->anggota()->count() > 0) {
+            session()->flash('error', 'Tidak bisa menghapus divisi yang masih memiliki anggota.');
+            return;
+        }
+        $this->deleteId = $id;
+        $this->deleteType = 'divisi';
+        $this->showDeleteConfirm = true;
+    }
+
+    public function executeDelete(): void
+    {
+        if ($this->deleteId) {
+            if ($this->deleteType === 'anggota') {
+                AnggotaDevisi::findOrFail($this->deleteId)->delete();
+                session()->flash('success', 'Anggota berhasil dihapus.');
+            } else {
+                Divisi::findOrFail($this->deleteId)->delete();
+                session()->flash('success', 'Divisi berhasil dihapus.');
+            }
+        }
+        $this->showDeleteConfirm = false;
+        $this->deleteId = null;
     }
 
     public function toggleAnggota(int $id): void
@@ -178,17 +209,6 @@ class AnggotaManager extends Component
 
         $this->showDivisiForm = false;
         $this->resetDivisiForm();
-    }
-
-    public function deleteDivisi(int $id): void
-    {
-        $d = Divisi::findOrFail($id);
-        if ($d->anggota()->count() > 0) {
-            session()->flash('error', 'Tidak bisa menghapus divisi yang masih memiliki anggota.');
-            return;
-        }
-        $d->delete();
-        session()->flash('success', 'Divisi berhasil dihapus.');
     }
 
     private function resetDivisiForm(): void
