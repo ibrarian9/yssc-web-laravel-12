@@ -1,0 +1,270 @@
+@import "tailwindcss";
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans:
+        "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
+    --color-foundation-yellow: #f1c40f;
+    --color-foundation-dark: #1a1a1a;
+    --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui;
+}
+
+@layer base {
+    body {
+        @apply antialiased text-foundation-dark;
+    }
+
+    /* Smooth scrolling */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* ── Polished Form Elements ── */
+    /* :where() = specificity 0, so Tailwind utilities can override */
+    :where(input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="tel"],
+    input[type="url"],
+    input[type="search"],
+    input[type="date"],
+    input[type="datetime-local"],
+    input[type="month"],
+    input[type="week"],
+    input[type="time"],
+    select,
+    textarea) {
+        display: block;
+        width: 100%;
+        padding: 0.625rem 0.875rem;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        color: #1f2937;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1.5px solid #d1d5db;
+        border-radius: 0.625rem;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    :where(input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="tel"],
+    input[type="url"],
+    input[type="search"],
+    input[type="date"],
+    input[type="datetime-local"],
+    input[type="month"],
+    input[type="week"],
+    input[type="time"],
+    select,
+    textarea):hover {
+        border-color: #9ca3af;
+    }
+
+    :where(input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="tel"],
+    input[type="url"],
+    input[type="search"],
+    input[type="date"],
+    input[type="datetime-local"],
+    input[type="month"],
+    input[type="week"],
+    input[type="time"],
+    select,
+    textarea):focus {
+        outline: none;
+        border-color: #0d9488;
+        box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15), 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+
+    :where(input)::placeholder,
+    :where(textarea)::placeholder {
+        color: #9ca3af;
+    }
+
+    /* Select arrow */
+    :where(select) {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+        background-position: right 0.625rem center;
+        background-repeat: no-repeat;
+        background-size: 1.25em;
+        padding-right: 2.5rem;
+    }
+
+    /* Checkbox & Radio — needs real specificity, not :where() */
+    input[type="checkbox"],
+    input[type="radio"] {
+        width: 1.125rem;
+        height: 1.125rem;
+        border: 1.5px solid #d1d5db;
+        background-color: #fff;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        display: inline-block;
+        vertical-align: middle;
+        flex-shrink: 0;
+    }
+
+    input[type="checkbox"] {
+        border-radius: 0.3rem;
+    }
+
+    input[type="radio"] {
+        border-radius: 50%;
+    }
+
+    input[type="checkbox"]:checked,
+    input[type="radio"]:checked {
+        background-color: #0d9488;
+        border-color: #0d9488;
+    }
+
+    input[type="checkbox"]:checked {
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3E%3C/svg%3E");
+        background-size: 100% 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    input[type="radio"]:checked {
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='8' cy='8' r='3'/%3E%3C/svg%3E");
+        background-size: 100% 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    input[type="checkbox"]:focus,
+    input[type="radio"]:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+        border-color: #0d9488;
+    }
+
+    /* File input */
+    :where(input[type="file"]) {
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+
+    :where(input[type="file"])::file-selector-button {
+        padding: 0.5rem 1rem;
+        margin-right: 0.75rem;
+        font-size: 0.8125rem;
+        font-weight: 500;
+        color: #0d9488;
+        background-color: #f0fdfa;
+        border: 1.5px solid #99f6e4;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    :where(input[type="file"])::file-selector-button:hover {
+        background-color: #ccfbf1;
+        border-color: #5eead4;
+    }
+
+    /* Disabled states */
+    :where(input, select, textarea):disabled {
+        background-color: #f3f4f6;
+        color: #9ca3af;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+    /* Selection color */
+    ::selection {
+        background-color: #0d9488;
+        color: white;
+    }
+}
+
+@layer components {
+    /* Livewire loading overlay */
+    [wire\:loading]:not([wire\:loading\.remove]) {
+        display: none;
+    }
+
+    /* Card hover lift effect */
+    .card-hover {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card-hover:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Gradient text */
+    .text-gradient {
+        background: linear-gradient(135deg, #0d9488, #14b8a6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* Fade in animation */
+    .fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
+    }
+    .fade-in-up {
+        animation: fadeInUp 0.6s ease-out forwards;
+    }
+
+    /* Skeleton loading placeholder */
+    .skeleton {
+        background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s ease-in-out infinite;
+    }
+}
+
+@layer utilities {
+    /* Animation delay utilities */
+    .animation-delay-100 { animation-delay: 100ms; }
+    .animation-delay-200 { animation-delay: 200ms; }
+    .animation-delay-300 { animation-delay: 300ms; }
+    .animation-delay-500 { animation-delay: 500ms; }
+}
+
+/* Keyframes */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
