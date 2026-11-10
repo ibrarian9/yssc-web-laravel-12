@@ -12,7 +12,7 @@ class ProfileController extends Controller
 {
     public function index()
     {
-        $profile = Profile::first();
+        $profile = Profile::getCached();
         $dokumen = DokumenLegal::where('is_public', true)->get();
 
         // Key team members for "Tim Kami" section

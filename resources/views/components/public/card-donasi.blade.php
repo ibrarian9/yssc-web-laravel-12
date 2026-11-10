@@ -1,20 +1,20 @@
 @props(['program'])
 
 @php
-    $terkumpul = $program->donasiSuccess()->sum('nominal');
+    $terkumpul = $program->total_terkumpul ?? $program->donasiSuccess()->sum('nominal');
     $persentase = $program->target_nominal > 0 ? min(100, round(($terkumpul / $program->target_nominal) * 100, 1)) : 0;
     $sisaHari = $program->tanggal_selesai ? (int) max(0, now()->diffInDays($program->tanggal_selesai, false)) : null;
-    $jumlahDonatur = $program->donasiSuccess()->count();
+    $jumlahDonatur = $program->donatur_count ?? $program->donasiSuccess()->count();
 @endphp
 
 <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-gray-100 flex flex-col">
     <div class="overflow-hidden h-48 relative">
         <img src="{{ str_starts_with($program->thumbnail, 'http') ? $program->thumbnail : asset('storage/'. $program->thumbnail) }}"
              class="w-full h-full object-cover group-hover:scale-110 transition duration-500"
-             alt="{{ $program->judul }}" loading="lazy">
+             alt="{{ $program->judul }}" loading="lazy" decoding="async">
         @if($program->is_mendesak)
-            <span class="absolute top-3 left-3 px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md bg-red-500 text-white animate-pulse">
-                🔥 Mendesak
+            <span class="absolute top-3 left-3 inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md bg-red-500 text-white animate-pulse">
+                <span class="material-symbols-outlined text-[12px]!">local_fire_department</span> Mendesak
             </span>
         @endif
     </div>
@@ -51,7 +51,7 @@
                 @endif
             </div>
 
-            <a href="{{ route('donasi.show', $program->slug) }}"
+            <a href="{{ route('donasi.show', $program->slug) }}" wire:navigate.hover
                class="block w-full text-center py-2.5 bg-linear-to-r from-teal-600 to-teal-700 text-white text-sm font-bold rounded-xl hover:from-teal-700 hover:to-teal-800 shadow-md shadow-teal-500/20 transition-all hover:shadow-lg hover:scale-[1.02]">
                 Donasi Sekarang
             </a>

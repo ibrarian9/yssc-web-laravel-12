@@ -4,7 +4,7 @@
     <div class="overflow-hidden h-48 sm:h-52 relative">
         <img src="{{ str_starts_with($berita->thumbnail, 'http') ? $berita->thumbnail : asset('storage/'. $berita->thumbnail) }}"
              class="w-full h-full object-cover group-hover:scale-110 transition duration-500"
-             alt="{{ $berita->judul }}" loading="lazy">
+             alt="{{ $berita->judul }}" loading="lazy" decoding="async">
         @if($berita->kategori)
             <span class="absolute top-3 left-3 px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md text-white"
                   style="background-color: {{ $berita->kategori->warna }}">
@@ -34,8 +34,8 @@
                 </div>
             @endif
         </div>
-        <a href="{{ route($berita->tipe === 'kegiatan' ? 'kegiatan.show' : 'berita.show', $berita->slug) }}"
-           class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-teal-600 hover:text-teal-800 transition group/link">
+        <a href="{{ route($berita->tipe === 'kegiatan' ? 'kegiatan.show' : 'berita.show', $berita->slug) }}" wire:navigate.hover
+           class="mt-3 py-2 min-h-[40px] inline-flex items-center gap-1 text-sm font-semibold text-teal-600 hover:text-teal-800 transition group/link">
             Baca Selengkapnya
             <span class="material-symbols-outlined text-[16px]! group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
         </a>

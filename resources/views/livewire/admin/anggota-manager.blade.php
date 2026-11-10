@@ -35,14 +35,14 @@
                 <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari nama, jabatan..."
                        class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl text-base focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all bg-gray-50/30 focus:bg-white">
             </div>
-            <div class="flex gap-3">
-                <select wire:model.live="filterDivisi" class="min-w-[160px] px-4 py-3 border border-gray-200 rounded-xl text-sm font-medium text-gray-600 focus:ring-2 focus:ring-teal-500 bg-white">
+            <div class="flex flex-col sm:flex-row gap-3">
+                <select wire:model.live="filterDivisi" class="w-full sm:w-auto sm:min-w-[160px] px-4 py-3 border border-gray-200 rounded-xl text-sm font-medium text-gray-600 focus:ring-2 focus:ring-teal-500 bg-white">
                     <option value="">Semua Divisi</option>
                     @foreach($divisiOptions as $d)
                         <option value="{{ $d->id }}">{{ $d->nama }}</option>
                     @endforeach
                 </select>
-                <button wire:click="createAnggota" class="px-5 py-3 bg-teal-600 text-white font-bold rounded-xl hover:bg-teal-700 transition flex items-center gap-2 whitespace-nowrap">
+                <button wire:click="createAnggota" class="w-full sm:w-auto justify-center px-5 py-3 min-h-[44px] bg-teal-600 text-white font-bold rounded-xl hover:bg-teal-700 transition flex items-center gap-2 whitespace-nowrap">
                     <span class="material-symbols-outlined text-[18px]!">add</span> Tambah Anggota
                 </button>
             </div>

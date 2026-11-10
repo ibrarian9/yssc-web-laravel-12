@@ -34,7 +34,6 @@ class MitraRegistrationForm extends Component
             'npwp' => 'required|string|max:30',
             'dokumenNpwp' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
             'dokumenLegalitas' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
-            'agreeTerms' => 'accepted',
         ];
     }
 
@@ -49,7 +48,6 @@ class MitraRegistrationForm extends Component
         'dokumenNpwp.max' => 'Dokumen NPWP maksimal 5MB.',
         'dokumenLegalitas.required' => 'Upload dokumen legalitas.',
         'dokumenLegalitas.max' => 'Dokumen legalitas maksimal 5MB.',
-        'agreeTerms.accepted' => 'Anda harus menyetujui syarat dan ketentuan.',
     ];
 
     public function submit()

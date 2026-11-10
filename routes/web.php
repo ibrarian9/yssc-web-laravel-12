@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ForceChangePasswordController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\Guest\HomeController;
 use App\Http\Controllers\Guest\BeritaController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\Guest\ProfileController;
 use App\Http\Controllers\Guest\AnggotaController;
 use App\Http\Controllers\Guest\DonasiController;
 use App\Http\Controllers\Guest\PerizinanController;
+use App\Http\Controllers\Guest\RelawanController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\MidtransCallbackController;
 use App\Models\Mitra;
@@ -44,6 +46,9 @@ Route::get('/perizinan', [PerizinanController::class , 'form'])->name('perizinan
 Route::post('/perizinan', [PerizinanController::class , 'submit'])->name('perizinan.submit');
 Route::get('/perizinan/cek', [PerizinanController::class , 'cek'])->middleware('throttle:10,1')->name('perizinan.cek');
 Route::get('/mitra', fn() => view('public.mitra.index'))->name('mitra.index');
+Route::get('/relawan', [RelawanController::class , 'index'])->name('relawan.index');
+Route::get('/relawan/daftar', [RelawanController::class , 'form'])->name('relawan.form');
+Route::post('/relawan/daftar', [RelawanController::class , 'submit'])->name('relawan.submit');
 
 /*
  |--------------------------------------------------------------------------
@@ -69,6 +74,10 @@ Route::middleware('auth')->group(function () {
         ->middleware('signed')->name('verification.verify');
     Route::post('/email/verification-notification', [VerificationController::class , 'resend'])
         ->middleware('throttle:6,1')->name('verification.send');
+
+    // Force change password (must be accessible even with must_change_password flag)
+    Route::get('/ubah-password', [ForceChangePasswordController::class , 'show'])->name('password.force-change');
+    Route::put('/ubah-password', [ForceChangePasswordController::class , 'update']);
 });
 
 /*
@@ -77,20 +86,26 @@ Route::middleware('auth')->group(function () {
  |--------------------------------------------------------------------------
  */
 
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'is-admin'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'must-change-password', 'is-admin'])->group(function () {
     Route::get('/', [DashboardController::class , 'index'])->name('dashboard');
 
     Route::get('/berita', fn() => view('admin.berita.index'))->name('berita.index');
     Route::get('/kategori', fn() => view('admin.kategori.index'))->name('kategori.index');
-    Route::get('/users', fn() => view('admin.users.index'))->name('users.index');
     Route::get('/sliders', fn() => view('admin.sliders.index'))->name('sliders.index');
     Route::get('/perizinan', fn() => view('admin.perizinan.index'))->name('perizinan.index');
     Route::get('/program-donasi', fn() => view('admin.program-donasi.index'))->name('program-donasi.index');
     Route::get('/transaksi-donasi', fn() => view('admin.transaksi-donasi.index'))->name('transaksi-donasi.index');
     Route::get('/mitra', fn() => view('admin.mitra.index'))->name('mitra.index');
     Route::get('/profil', fn() => view('admin.profil.index'))->name('profil.index');
-    Route::get('/audit-log', fn() => view('admin.audit-log.index'))->name('audit-log.index');
     Route::get('/anggota', fn() => view('admin.anggota.index'))->name('anggota.index');
+    Route::get('/relawan', fn() => view('admin.relawan.index'))->name('relawan.index');
+    Route::get('/hero-sections', fn() => view('admin.hero-sections.index'))->name('hero-sections.index');
+    Route::get('/tutorial', fn() => view('admin.tutorial.index'))->name('tutorial.index');
+
+    Route::middleware('is-superadmin')->group(function () {
+        Route::get('/users', fn() => view('admin.users.index'))->name('users.index');
+        Route::get('/audit-log', fn() => view('admin.audit-log.index'))->name('audit-log.index');
+    });
 
     // Download private mitra documents
     Route::get('/mitra/{mitra}/dokumen/{type}', function (Mitra $mitra, string $type) {
@@ -125,7 +140,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'is-admin'])->group(
     });
 
 // ── Mitra Panel ──
-Route::prefix('mitra-panel')->name('mitra.')->middleware(['auth', 'is-mitra'])->group(function () {
+Route::prefix('mitra-panel')->name('mitra.')->middleware(['auth', 'must-change-password', 'is-mitra'])->group(function () {
     Route::get('/', fn() => view('mitra.dashboard.index'))->name('dashboard');
     Route::get('/program-donasi', fn() => view('mitra.program-donasi.index'))->name('program-donasi.index');
     Route::get('/berita', fn() => view('mitra.berita.index'))->name('berita.index');

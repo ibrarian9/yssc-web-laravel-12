@@ -3,36 +3,21 @@
     <x-slot:metaDescription>Kenali tim dan pengurus yang menggerakkan Yayasan Seribu Satu Cita.</x-slot:metaDescription>
 
     {{-- Hero --}}
-    <section class="relative bg-gradient-to-br from-gray-900 via-gray-800 to-teal-900 py-20 md:py-28 overflow-hidden">
-        <div class="absolute inset-0 opacity-10">
-            <div class="absolute top-20 left-20 w-80 h-80 rounded-full bg-teal-400 blur-[100px]"></div>
-            <div class="absolute bottom-10 right-20 w-60 h-60 rounded-full bg-amber-400 blur-[80px]"></div>
-        </div>
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            <span class="inline-block px-4 py-1.5 bg-teal-500/20 text-teal-300 text-xs font-bold uppercase tracking-widest rounded-full mb-5 border border-teal-500/30">
-                <span class="material-symbols-outlined text-[14px]! align-middle mr-1">groups</span>
-                Tim Kami
-            </span>
-            <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-5 leading-tight">Anggota & Pengurus</h1>
-            <p class="text-gray-300 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-                Orang-orang berdedikasi yang bekerja di balik layar untuk mewujudkan misi sosial yayasan kami
-            </p>
-
-            {{-- Stats --}}
-            <div class="flex justify-center gap-8 mt-10">
-                @php $totalMembers = $divisi->sum(fn($d) => $d->anggotaAktif->count()); @endphp
-                <div class="text-center">
-                    <div class="text-3xl md:text-4xl font-extrabold text-teal-400">{{ $totalMembers }}</div>
-                    <div class="text-xs text-gray-400 uppercase tracking-wider mt-1">Anggota Aktif</div>
-                </div>
-                <div class="w-px bg-gray-600"></div>
-                <div class="text-center">
-                    <div class="text-3xl md:text-4xl font-extrabold text-amber-400">{{ $divisi->count() }}</div>
-                    <div class="text-xs text-gray-400 uppercase tracking-wider mt-1">Divisi</div>
-                </div>
+    <x-public.page-hero page="anggota" badge="Tim Kami" default-title="Anggota & Pengurus" default-subtitle="Orang-orang berdedikasi yang bekerja di balik layar untuk mewujudkan misi sosial yayasan kami">
+        {{-- Stats --}}
+        <div class="flex justify-center gap-8 mt-10">
+            @php $totalMembers = $divisi->sum(fn($d) => $d->anggotaAktif->count()); @endphp
+            <div class="text-center">
+                <div class="text-3xl md:text-4xl font-extrabold text-teal-400">{{ $totalMembers }}</div>
+                <div class="text-xs text-gray-300 uppercase tracking-wider mt-1">Anggota Aktif</div>
+            </div>
+            <div class="w-px bg-white/20"></div>
+            <div class="text-center">
+                <div class="text-3xl md:text-4xl font-extrabold text-amber-400">{{ $divisi->count() }}</div>
+                <div class="text-xs text-gray-300 uppercase tracking-wider mt-1">Divisi</div>
             </div>
         </div>
-    </section>
+    </x-public.page-hero>
 
     {{-- Divisi Tabs + Content --}}
     <section class="py-12 lg:py-16 bg-gray-50" x-data="{ activeTab: {{ $divisi->first()?->id ?? 0 }} }">

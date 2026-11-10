@@ -4,10 +4,24 @@ namespace App\Models;
 
 use App\Enums\JenisMitra;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 
 class Mitra extends Model
 {
+    use LogsActivity;
+
     protected $table = 'mitra';
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('mitra')
+            ->logFillable()
+            ->logOnlyDirty()
+            ->dontLogEmptyChanges()
+            ->setDescriptionForEvent(fn (string $event) => "Mitra \"{$this->nama_perusahaan}\" {$event}");
+    }
 
     protected $fillable = [
         'user_id',

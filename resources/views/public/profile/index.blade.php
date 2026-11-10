@@ -3,17 +3,7 @@
     <x-slot:metaDescription>Profil, visi misi, dan informasi lengkap Yayasan Seribu Satu Cita.</x-slot:metaDescription>
 
     {{-- Hero --}}
-    <section class="relative bg-gradient-to-br from-gray-900 via-gray-800 to-teal-900 py-20 md:py-28 overflow-hidden">
-        <div class="absolute inset-0 opacity-10">
-            <div class="absolute top-10 left-10 w-72 h-72 rounded-full bg-teal-400 blur-[100px]"></div>
-            <div class="absolute bottom-10 right-10 w-96 h-96 rounded-full bg-amber-400 blur-[120px]"></div>
-        </div>
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            <span class="inline-block px-4 py-1.5 bg-teal-500/20 text-teal-300 text-xs font-bold uppercase tracking-widest rounded-full mb-5 border border-teal-500/30">Tentang Kami</span>
-            <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-5 leading-tight">{{ $profile?->nama_organisasi ?? 'Profil Organisasi' }}</h1>
-            <p class="text-gray-300 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">{{ $profile?->tagline ?? 'Bersama membangun masa depan yang lebih baik' }}</p>
-        </div>
-    </section>
+    <x-public.page-hero page="profil" badge="Tentang Kami" :default-title="$profile?->nama_organisasi ?? 'Profil Organisasi'" :default-subtitle="$profile?->tagline ?? 'Bersama membangun masa depan yang lebih baik'" />
 
     @if($profile)
     {{-- Deskripsi with accent --}}
@@ -33,30 +23,33 @@
                 <span class="inline-block px-4 py-1.5 bg-teal-50 text-teal-700 text-xs font-bold uppercase tracking-widest rounded-full mb-3">Visi & Misi</span>
                 <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800">Arah & Tujuan Kami</h2>
             </div>
-            <div class="grid md:grid-cols-2 gap-8">
+            <div class="grid md:grid-cols-2 gap-8 items-stretch">
                 {{-- Visi --}}
-                <div class="relative bg-white rounded-2xl p-8 shadow-sm border border-gray-100 group hover:shadow-lg transition-all duration-300">
-                    <div class="absolute -top-5 left-8">
-                        <div class="w-10 h-10 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/30">
-                            <span class="material-symbols-outlined text-[20px]! text-white">visibility</span>
+                <div class="relative bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:border-teal-200 hover:shadow-xl transition-all duration-300 flex flex-col group">
+                    <div class="absolute -top-6 left-8">
+                        <div class="w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg shadow-teal-500/30 group-hover:scale-105 transition-transform">
+                            <span class="material-symbols-outlined text-[22px]! text-white">visibility</span>
                         </div>
                     </div>
-                    <h2 class="text-2xl font-extrabold text-gray-800 mb-4 mt-3">Visi</h2>
-                    <p class="text-gray-600 leading-relaxed text-lg italic border-l-4 border-teal-400 pl-4">{{ $profile->visi }}</p>
+                    <h2 class="text-2xl font-extrabold text-gray-800 mb-4 mt-2">Visi</h2>
+                    <div class="p-6 bg-teal-50/50 rounded-2xl border border-teal-100/80 leading-relaxed text-gray-700 text-base md:text-lg not-italic flex-1 flex items-center">
+                        {{ $profile->visi }}
+                    </div>
                 </div>
+
                 {{-- Misi --}}
-                <div class="relative bg-white rounded-2xl p-8 shadow-sm border border-gray-100 group hover:shadow-lg transition-all duration-300">
-                    <div class="absolute -top-5 left-8">
-                        <div class="w-10 h-10 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/30">
-                            <span class="material-symbols-outlined text-[20px]! text-white">flag</span>
+                <div class="relative bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:border-teal-200 hover:shadow-xl transition-all duration-300 flex flex-col group">
+                    <div class="absolute -top-6 left-8">
+                        <div class="w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg shadow-teal-500/30 group-hover:scale-105 transition-transform">
+                            <span class="material-symbols-outlined text-[22px]! text-white">flag</span>
                         </div>
                     </div>
-                    <h2 class="text-2xl font-extrabold text-gray-800 mb-4 mt-3">Misi</h2>
+                    <h2 class="text-2xl font-extrabold text-gray-800 mb-4 mt-2">Misi</h2>
                     @if($profile->misi)
-                        <ul class="space-y-3">
+                        <ul class="space-y-3 flex-1">
                             @foreach($profile->misi as $i => $misi)
-                                <li class="flex items-start gap-3 text-gray-600">
-                                    <span class="flex-shrink-0 w-7 h-7 bg-teal-50 rounded-lg flex items-center justify-center text-teal-600 text-xs font-bold mt-0.5">{{ $i + 1 }}</span>
+                                <li class="flex items-start gap-3.5 p-3.5 bg-teal-50/50 rounded-2xl border border-teal-100/80 text-gray-700 text-sm md:text-base transition hover:bg-teal-50">
+                                    <span class="flex-shrink-0 w-7 h-7 bg-teal-600 rounded-lg flex items-center justify-center text-white text-xs font-bold mt-0.5 shadow-sm shadow-teal-600/30">{{ $i + 1 }}</span>
                                     <span class="leading-relaxed">{{ $misi }}</span>
                                 </li>
                             @endforeach

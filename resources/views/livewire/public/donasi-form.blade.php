@@ -1,24 +1,41 @@
 <div x-data="{
-    snapReady: false,
+    snapReady: typeof window.snap !== 'undefined',
     paymentPending: false,
+    ensureSnap() {
+        return new Promise((resolve) => {
+            if (window.snap) {
+                this.snapReady = true;
+                return resolve();
+            }
+            const existing = document.getElementById('midtrans-snap-script');
+            if (existing) {
+                existing.addEventListener('load', () => { this.snapReady = true; resolve(); }, { once: true });
+                return;
+            }
+            const script = document.createElement('script');
+            script.id = 'midtrans-snap-script';
+            script.src = '{{ config('midtrans.is_production') ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js' }}';
+            script.dataset.clientKey = '{{ config('midtrans.client_key') }}';
+            script.async = true;
+            script.onload = () => { this.snapReady = true; resolve(); };
+            document.head.appendChild(script);
+        });
+    },
     init() {
-        // Listen for Livewire event to open Snap
-        Livewire.on('open-snap', (data) => {
+        // Preload Snap.js only on the donation checkout page without blocking initial render
+        this.ensureSnap();
+
+        Livewire.on('open-snap', async (data) => {
+            await this.ensureSnap();
             if (window.snap && data.token) {
                 window.snap.pay(data.token, {
-                    onSuccess: (result) => {
-                        $wire.paymentSuccess();
-                    },
-                    onPending: (result) => {
+                    onSuccess: () => $wire.paymentSuccess(),
+                    onPending: () => {
                         this.paymentPending = true;
                         $wire.paymentPending();
                     },
-                    onError: (result) => {
-                        $wire.paymentError();
-                    },
-                    onClose: () => {
-                        // User closed the popup without completing
-                    }
+                    onError: () => $wire.paymentError(),
+                    onClose: () => {}
                 });
             }
         });

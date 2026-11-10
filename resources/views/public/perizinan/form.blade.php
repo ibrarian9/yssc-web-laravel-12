@@ -2,24 +2,7 @@
     <x-slot:title>Perizinan — Yayasan Seribu Satu Cita</x-slot:title>
 
     {{-- Hero Section --}}
-    <section class="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-20 md:py-28 overflow-hidden">
-        {{-- Decorative elements --}}
-        <div class="absolute inset-0 opacity-10">
-            <div class="absolute top-10 right-20 w-72 h-72 bg-teal-400 rounded-full blur-3xl"></div>
-            <div class="absolute bottom-10 left-20 w-48 h-48 bg-emerald-400 rounded-full blur-3xl"></div>
-        </div>
-
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            <div
-                class="inline-flex items-center gap-2 px-4 py-2 bg-teal-500/20 border border-teal-500/30 rounded-full mb-6">
-                <span class="material-symbols-outlined text-teal-400 text-[18px]!">assignment</span>
-                <span class="text-teal-300 text-sm font-semibold">Layanan Online</span>
-            </div>
-            <h1 class="text-3xl md:text-5xl font-extrabold text-white mb-4">Permohonan Perizinan</h1>
-            <p class="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed">Ajukan permohonan kerja sama, izin
-                kegiatan, atau surat rekomendasi dari Yayasan Seribu Satu Cita secara online.</p>
-        </div>
-    </section>
+    <x-public.page-hero page="perizinan" badge="Layanan Online" default-title="Permohonan Perizinan" default-subtitle="Ajukan permohonan kerja sama, izin kegiatan, atau surat rekomendasi dari Yayasan Seribu Satu Cita secara online." />
 
     <section class="py-12 lg:py-16 -mt-10 relative z-20">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">

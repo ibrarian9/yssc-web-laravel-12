@@ -13,8 +13,10 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'is-admin' => \App\Http\Middleware\IsAdmin::class,
+            'is-superadmin' => \App\Http\Middleware\IsSuperAdmin::class,
             'is-verified' => \App\Http\Middleware\IsVerified::class,
             'is-mitra' => \App\Http\Middleware\IsMitra::class,
+            'must-change-password' => \App\Http\Middleware\MustChangePassword::class,
         ]);
 
         $middleware->validateCsrfTokens(except: [

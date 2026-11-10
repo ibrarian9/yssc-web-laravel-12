@@ -20,9 +20,11 @@
         @apply antialiased text-foundation-dark;
     }
 
-    /* Smooth scrolling */
-    html {
-        scroll-behavior: smooth;
+    /* Smooth scrolling for anchor targets (fallback handled by html.scroll-smooth on public pages) */
+    @media (prefers-reduced-motion: no-preference) {
+        :root:has(:target) {
+            scroll-behavior: smooth;
+        }
     }
 
     /* ── Polished Form Elements ── */

@@ -19,6 +19,9 @@ class DatabaseSeeder extends Seeder
             SliderSeeder::class,
             ProgramDonasiSeeder::class,
             DonasiSeeder::class,
+            PerizinanSeeder::class,
+            MitraSeeder::class,
+            RelawanSeeder::class,
         ]);
     }
 }

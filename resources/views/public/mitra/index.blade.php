@@ -3,16 +3,11 @@
     <x-slot:metaDescription>Daftar sebagai mitra Yayasan Seribu Satu Cita untuk berkontribusi dan berkolaborasi.</x-slot:metaDescription>
 
     {{-- Hero --}}
-    <section class="bg-gradient-to-br from-teal-700 via-teal-600 to-emerald-500 text-white py-16 md:py-24">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <span class="material-symbols-outlined text-[48px]! text-teal-200 mb-4">handshake</span>
-            <h1 class="text-3xl md:text-5xl font-extrabold mb-4">Jadilah Mitra Kami</h1>
-            <p class="text-teal-100 text-lg max-w-2xl mx-auto leading-relaxed">
-                Bergabunglah bersama kami untuk membuat dampak sosial yang lebih besar.
-                Daftar sebagai mitra dan mari berkolaborasi untuk Indonesia yang lebih baik.
-            </p>
+    <x-public.page-hero page="mitra" default-title="Kemitraan & Kolaborasi" default-subtitle="Bergabunglah bersama kami untuk membuat dampak sosial yang lebih besar. Daftar sebagai mitra dan mari berkolaborasi untuk Indonesia yang lebih baik.">
+        <div class="mt-4">
+            <span class="material-symbols-outlined text-[48px]! text-teal-200">handshake</span>
         </div>
-    </section>
+    </x-public.page-hero>
 
     {{-- Form Section --}}
     <section class="py-16 bg-gray-50">

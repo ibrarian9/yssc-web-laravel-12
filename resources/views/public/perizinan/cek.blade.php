@@ -2,19 +2,7 @@
     <x-slot:title>Cek Status Perizinan — Yayasan Seribu Satu Cita</x-slot:title>
 
     {{-- Hero Section --}}
-    <section class="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-20 md:py-28 overflow-hidden">
-        <div class="absolute inset-0 opacity-10">
-            <div class="absolute top-10 right-20 w-72 h-72 bg-teal-400 rounded-full blur-3xl"></div>
-        </div>
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            <div class="inline-flex items-center gap-2 px-4 py-2 bg-teal-500/20 border border-teal-500/30 rounded-full mb-6">
-                <span class="material-symbols-outlined text-teal-400 text-[18px]!">manage_search</span>
-                <span class="text-teal-300 text-sm font-semibold">Tracking Permohonan</span>
-            </div>
-            <h1 class="text-3xl md:text-5xl font-extrabold text-white mb-4">Cek Status Permohonan</h1>
-            <p class="text-gray-400 text-lg max-w-xl mx-auto">Masukkan email Anda untuk melihat status permohonan perizinan</p>
-        </div>
-    </section>
+    <x-public.page-hero page="perizinan" badge="Tracking Permohonan" default-title="Cek Status Permohonan" default-subtitle="Masukkan email Anda untuk melihat status permohonan perizinan" />
 
     <section class="py-12 lg:py-16 -mt-10 relative z-20">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">

@@ -82,18 +82,6 @@
                 </div>
             </div>
 
-            {{-- Terms --}}
-            <div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                <label class="flex items-start gap-3 cursor-pointer">
-                    <input type="checkbox" wire:model="agreeTerms" class="rounded border-gray-300 text-teal-600 focus:ring-teal-500 mt-0.5">
-                    <span class="text-sm text-gray-600">
-                        Saya menyetujui <a href="#" class="text-teal-600 font-semibold hover:underline">Syarat dan Ketentuan</a>
-                        serta <a href="#" class="text-teal-600 font-semibold hover:underline">Kebijakan Privasi</a> Yayasan Seribu Satu Cita.
-                    </span>
-                </label>
-                @error('agreeTerms') <p class="text-xs text-red-500 mt-2">{{ $message }}</p> @enderror
-            </div>
-
             {{-- Submit --}}
             <button type="submit"
                     class="w-full py-3.5 bg-gradient-to-r from-teal-600 to-teal-700 text-white font-bold rounded-xl hover:from-teal-700 hover:to-teal-800 shadow-lg shadow-teal-500/20 transition-all hover:shadow-xl disabled:opacity-50"

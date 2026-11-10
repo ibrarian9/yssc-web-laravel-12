@@ -36,8 +36,16 @@ class LoginController extends Controller
                 ]);
             }
 
+            if ($user->must_change_password) {
+                return redirect()->route('password.force-change');
+            }
+
             if ($user->isAdmin()) {
                 return redirect()->intended(route('admin.dashboard'));
+            }
+
+            if ($user->role->isMitra()) {
+                return redirect()->intended(route('mitra.dashboard'));
             }
 
             return redirect()->intended(route('home'));

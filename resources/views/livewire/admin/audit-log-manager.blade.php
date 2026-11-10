@@ -1,23 +1,37 @@
+@php
+    $eventColors = [
+        'login' => 'bg-teal-100 text-teal-700',
+        'logout' => 'bg-gray-100 text-gray-700',
+        'failed' => 'bg-amber-100 text-amber-800',
+        'created' => 'bg-green-100 text-green-700',
+        'updated' => 'bg-blue-100 text-blue-700',
+        'deleted' => 'bg-red-100 text-red-700',
+    ];
+@endphp
+
 <div>
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <div><h2 class="text-2xl font-extrabold text-gray-800">Audit Log</h2><p class="text-sm text-gray-500">Riwayat aktivitas perubahan data di sistem</p></div>
+        <div><h2 class="text-2xl font-extrabold text-gray-800">Audit Log</h2><p class="text-sm text-gray-500">Riwayat login, keamanan, dan perubahan data di sistem</p></div>
     </div>
 
     {{-- Filters --}}
     <div class="bg-white rounded-2xl p-5 shadow-md border border-gray-100 mb-8 flex flex-col lg:flex-row gap-4 items-stretch">
         <div class="flex-1 relative">
             <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-[20px]!">search</span>
-            <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari aktivitas..."
+            <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari aktivitas, user, atau deskripsi..."
                    class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl text-base focus:ring-2 focus:ring-teal-500 focus:border-teal-500 bg-gray-50/30 focus:bg-white">
         </div>
-        <div class="flex gap-3">
-            <select wire:model.live="filterEvent" class="min-w-[130px] px-4 py-3 border border-gray-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-teal-500 bg-white">
+        <div class="flex flex-col sm:flex-row gap-3">
+            <select wire:model.live="filterEvent" class="w-full sm:w-auto sm:min-w-[140px] px-4 py-3 border border-gray-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-teal-500 bg-white">
                 <option value="">Semua Event</option>
+                <option value="login">Login</option>
+                <option value="logout">Logout</option>
+                <option value="failed">Login Gagal</option>
                 <option value="created">Created</option>
                 <option value="updated">Updated</option>
                 <option value="deleted">Deleted</option>
             </select>
-            <select wire:model.live="filterSubject" class="min-w-[130px] px-4 py-3 border border-gray-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-teal-500 bg-white">
+            <select wire:model.live="filterSubject" class="w-full sm:w-auto sm:min-w-[130px] px-4 py-3 border border-gray-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-teal-500 bg-white">
                 <option value="">Semua Model</option>
                 @foreach($subjectTypes as $st)
                     <option value="{{ $st['full'] }}">{{ $st['short'] }}</option>
@@ -40,14 +54,7 @@
                 </tr></thead>
                 <tbody class="divide-y divide-gray-50">
                     @forelse($logs as $log)
-                        @php
-                            $eventColors = [
-                                'created' => 'bg-green-100 text-green-700',
-                                'updated' => 'bg-blue-100 text-blue-700',
-                                'deleted' => 'bg-red-100 text-red-700',
-                            ];
-                            $eventColor = $eventColors[$log->event] ?? 'bg-gray-100 text-gray-600';
-                        @endphp
+                        @php $eventColor = $eventColors[$log->event] ?? 'bg-gray-100 text-gray-600'; @endphp
                         <tr class="hover:bg-gray-50/50">
                             <td class="px-4 py-3 whitespace-nowrap">
                                 <p class="text-gray-800 font-medium text-xs">{{ $log->created_at->format('d/m/Y') }}</p>
@@ -65,12 +72,12 @@
                                 <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase {{ $eventColor }}">{{ $log->event ?? '-' }}</span>
                             </td>
                             <td class="px-4 py-3">
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-purple-700">{{ class_basename($log->subject_type ?? '-') }}</span>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-purple-700">{{ $log->subject_type ? class_basename($log->subject_type) : ucfirst($log->log_name ?? 'Auth') }}</span>
                                 @if($log->subject_id) <span class="text-[10px] text-gray-400 ml-1">#{{ $log->subject_id }}</span> @endif
                             </td>
-                            <td class="px-4 py-3 text-gray-600 text-xs max-w-[200px] truncate">{{ $log->description }}</td>
+                            <td class="px-4 py-3 text-gray-600 text-xs max-w-[260px] truncate" title="{{ $log->description }}">{{ $log->description }}</td>
                             <td class="px-4 py-3 text-right">
-                                <button wire:click="openDetail({{ $log->id }})" class="p-1.5 rounded-lg hover:bg-teal-50 text-teal-600" title="Detail">
+                                <button wire:click="openDetail({{ $log->id }})" class="p-2 min-w-[38px] min-h-[38px] inline-flex items-center justify-center rounded-lg hover:bg-teal-50 text-teal-600 cursor-pointer" title="Detail">
                                     <span class="material-symbols-outlined text-[18px]!">visibility</span>
                                 </button>
                             </td>
@@ -122,12 +129,18 @@
                     <p class="text-sm text-gray-700">{{ $detail->description }}</p>
                 </div>
 
-                @if($detail->properties && $detail->properties->count() > 0)
-                    {{-- Changes --}}
-                    @if($detail->properties->has('old') && $detail->properties->has('attributes'))
+                @php
+                    $changes = ($detail->attribute_changes && $detail->attribute_changes->count() > 0)
+                        ? $detail->attribute_changes
+                        : (($detail->properties && ($detail->properties->has('attributes') || $detail->properties->has('old'))) ? $detail->properties : null);
+                    $formatAuditVal = fn($v) => is_bool($v) ? ($v ? 'true' : 'false') : (is_array($v) ? json_encode($v, JSON_UNESCAPED_UNICODE) : ($v ?? '—'));
+                @endphp
+
+                @if($changes)
+                    @if($changes->has('old') && $changes->has('attributes'))
                         <div>
-                            <p class="text-[10px] uppercase font-bold text-gray-400 mb-2">Perubahan</p>
-                            <div class="rounded-xl border border-gray-100 overflow-hidden text-xs">
+                            <p class="text-[10px] uppercase font-bold text-gray-400 mb-2">Perubahan Data</p>
+                            <div class="rounded-xl border border-gray-100 overflow-x-auto text-xs">
                                 <table class="w-full">
                                     <thead class="bg-gray-50"><tr>
                                         <th class="px-3 py-2 text-left text-gray-500 font-semibold">Field</th>
@@ -135,43 +148,45 @@
                                         <th class="px-3 py-2 text-left text-green-600 font-semibold">Sesudah</th>
                                     </tr></thead>
                                     <tbody class="divide-y divide-gray-50">
-                                        @foreach($detail->properties['attributes'] as $key => $newVal)
+                                        @foreach($changes['attributes'] as $key => $newVal)
                                             <tr>
                                                 <td class="px-3 py-1.5 font-medium text-gray-700">{{ $key }}</td>
-                                                <td class="px-3 py-1.5 text-red-600 bg-red-50/50">{{ $detail->properties['old'][$key] ?? '—' }}</td>
-                                                <td class="px-3 py-1.5 text-green-700 bg-green-50/50">{{ is_array($newVal) ? json_encode($newVal) : $newVal }}</td>
+                                                <td class="px-3 py-1.5 text-red-600 bg-red-50/50 break-all">{{ $formatAuditVal($changes['old'][$key] ?? null) }}</td>
+                                                <td class="px-3 py-1.5 text-green-700 bg-green-50/50 break-all">{{ $formatAuditVal($newVal) }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-                    @elseif($detail->properties->has('attributes'))
+                    @elseif($changes->has('attributes'))
                         <div>
                             <p class="text-[10px] uppercase font-bold text-gray-400 mb-2">Data</p>
-                            <div class="rounded-xl border border-gray-100 overflow-hidden text-xs">
+                            <div class="rounded-xl border border-gray-100 overflow-x-auto text-xs">
                                 <table class="w-full">
                                     <thead class="bg-gray-50"><tr>
                                         <th class="px-3 py-2 text-left text-gray-500 font-semibold">Field</th>
                                         <th class="px-3 py-2 text-left text-gray-500 font-semibold">Nilai</th>
                                     </tr></thead>
                                     <tbody class="divide-y divide-gray-50">
-                                        @foreach($detail->properties['attributes'] as $key => $val)
+                                        @foreach($changes['attributes'] as $key => $val)
                                             <tr>
                                                 <td class="px-3 py-1.5 font-medium text-gray-700">{{ $key }}</td>
-                                                <td class="px-3 py-1.5 text-gray-600">{{ is_array($val) ? json_encode($val) : $val }}</td>
+                                                <td class="px-3 py-1.5 text-gray-600 break-all">{{ $formatAuditVal($val) }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-                    @else
-                        <div>
-                            <p class="text-[10px] uppercase font-bold text-gray-400 mb-2">Properties</p>
-                            <pre class="text-xs bg-gray-50 rounded-xl p-3 overflow-x-auto text-gray-600">{{ json_encode($detail->properties, JSON_PRETTY_PRINT) }}</pre>
-                        </div>
                     @endif
+                @endif
+
+                @if($detail->properties && $detail->properties->count() > 0 && !$detail->properties->has('attributes'))
+                    <div>
+                        <p class="text-[10px] uppercase font-bold text-gray-400 mb-2">Informasi Tambahan</p>
+                        <pre class="text-xs bg-gray-50 rounded-xl p-3 overflow-x-auto text-gray-600">{{ json_encode($detail->properties, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) }}</pre>
+                    </div>
                 @endif
             </div>
         </div>

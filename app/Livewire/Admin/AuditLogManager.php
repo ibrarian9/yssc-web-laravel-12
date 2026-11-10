@@ -41,7 +41,10 @@ class AuditLogManager extends Component
             $query->where(function ($q) {
                 $q->where('description', 'like', "%{$this->search}%")
                   ->orWhere('log_name', 'like', "%{$this->search}%")
-                  ->orWhere('properties', 'like', "%{$this->search}%");
+                  ->orWhere('event', 'like', "%{$this->search}%")
+                  ->orWhere('attribute_changes', 'like', "%{$this->search}%")
+                  ->orWhere('properties', 'like', "%{$this->search}%")
+                  ->orWhereHas('causer', fn($u) => $u->where('name', 'like', "%{$this->search}%"));
             });
         }
 

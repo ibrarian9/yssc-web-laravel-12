@@ -4,8 +4,8 @@
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="max-w-md mx-auto">
                 <div class="text-center mb-8">
-                    @php $authLogo = \App\Models\Profile::first(); @endphp
-                    <a href="{{ route('home') }}"><img src="{{ $authLogo?->logo ? asset('storage/' . $authLogo->logo) : asset('assets/logo.png') }}" alt="Logo" class="h-14 mx-auto mb-4"></a>
+                    @php $authLogo = \App\Models\Profile::getCached(); @endphp
+                    <a href="{{ route('home') }}" wire:navigate><img src="{{ $authLogo?->logo ? asset('storage/' . $authLogo->logo) : asset('assets/logo.png') }}" alt="Logo" class="h-14 mx-auto mb-4"></a>
                     <h1 class="text-2xl font-extrabold text-gray-800">Lupa Password</h1>
                     <p class="text-gray-500 text-sm mt-1">Masukkan email Anda untuk menerima link reset password.</p>
                 </div>
