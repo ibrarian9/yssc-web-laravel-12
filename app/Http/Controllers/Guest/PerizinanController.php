@@ -22,13 +22,13 @@ class PerizinanController extends Controller
             'jenis_izin' => 'required|in:kegiatan,kerjasama,rekomendasi,lainnya',
             'judul_permohonan' => 'required|string|max:255',
             'deskripsi' => 'required|string',
-            'dokumen_pendukung.*' => 'nullable|file|max:5120',
+            'dokumen_pendukung.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:5120',
         ]);
 
         $dokumen = [];
         if ($request->hasFile('dokumen_pendukung')) {
             foreach ($request->file('dokumen_pendukung') as $file) {
-                $dokumen[] = $file->store('perizinan/dokumen', 'public');
+                $dokumen[] = $file->store('perizinan', 'local');
             }
         }
 

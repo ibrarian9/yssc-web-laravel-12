@@ -41,7 +41,17 @@
                 <div><p class="text-[10px] uppercase font-bold text-gray-400 mb-0.5">Perusahaan</p><p class="text-gray-800 font-semibold">{{ $mitra->nama_perusahaan }}</p></div>
                 <div><p class="text-[10px] uppercase font-bold text-gray-400 mb-0.5">Jenis</p><p class="text-gray-800">{{ $mitra->jenis_mitra->label() }}</p></div>
                 <div><p class="text-[10px] uppercase font-bold text-gray-400 mb-0.5">Email</p><p class="text-gray-800">{{ $mitra->email }}</p></div>
-                <div><p class="text-[10px] uppercase font-bold text-gray-400 mb-0.5">Status</p><span class="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-[10px] font-bold">APPROVED</span></div>
+                <div>
+                    <p class="text-[10px] uppercase font-bold text-gray-400 mb-0.5">Status</p>
+                    @php
+                        $statusBadge = match($mitra->status) {
+                            'approved' => 'bg-green-100 text-green-700',
+                            'rejected' => 'bg-red-100 text-red-700',
+                            default => 'bg-yellow-100 text-yellow-700',
+                        };
+                    @endphp
+                    <span class="px-2 py-0.5 {{ $statusBadge }} rounded-full text-[10px] font-bold">{{ strtoupper($mitra->status) }}</span>
+                </div>
             </div>
         </div>
     @endif
@@ -55,8 +65,8 @@
             @forelse($recentDonations as $d)
                 <div class="px-6 py-3 flex items-center justify-between">
                     <div>
-                        <p class="font-semibold text-gray-800 text-sm">{{ $d->nama_donatur ?? 'Anonim' }}</p>
-                        <p class="text-xs text-gray-400">{{ $d->programDonasi?->judul }} · {{ $d->created_at->diffForHumans() }}</p>
+                        <p class="font-semibold text-gray-800 text-sm">{{ $d->nama_tampil }}</p>
+                        <p class="text-xs text-gray-400">{{ $d->program?->judul }} · {{ $d->created_at->diffForHumans() }}</p>
                     </div>
                     <span class="text-sm font-bold text-emerald-600">Rp {{ number_format($d->nominal, 0, ',', '.') }}</span>
                 </div>

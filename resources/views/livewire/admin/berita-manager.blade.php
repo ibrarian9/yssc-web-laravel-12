@@ -61,7 +61,7 @@
                         <td class="px-4 py-3">
                             <div class="flex items-center gap-3">
                                 @if($item->thumbnail)
-                                <img src="{{ $item->thumbnail }}" class="w-12 h-10 rounded-lg object-cover shrink-0"
+                                <img src="{{ $item->thumbnail_url }}" class="w-12 h-10 rounded-lg object-cover shrink-0"
                                     alt="">
                                 @else
                                 <div class="w-12 h-10 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">

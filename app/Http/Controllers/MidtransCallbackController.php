@@ -54,6 +54,7 @@ class MidtransCallbackController extends Controller
         }
 
         $donasi->update($updateData);
+        $donasi->program?->updateTerkumpul();
 
         Log::info('Midtrans donation updated', [
             'order_id' => $orderId,

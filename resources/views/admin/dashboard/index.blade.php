@@ -75,7 +75,7 @@
             @foreach($beritaTerbaru as $b)
                 <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                     <div class="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden shrink-0">
-                        <img src="{{ $b->thumbnail }}" class="w-full h-full object-cover" alt="">
+                        <img src="{{ $b->thumbnail_url }}" class="w-full h-full object-cover" alt="">
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-semibold text-gray-700 truncate">{{ $b->judul }}</p>

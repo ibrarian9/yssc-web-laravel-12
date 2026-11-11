@@ -27,16 +27,16 @@
                         <td class="px-4 py-3">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 shrink-0">
-                                    @if($b->thumbnail)<img src="{{ Storage::url($b->thumbnail) }}" class="w-full h-full object-cover">@else<div class="w-full h-full bg-emerald-50 flex items-center justify-center"><span class="material-symbols-outlined text-emerald-400 text-[16px]!">newspaper</span></div>@endif
+                                    @if($b->thumbnail)<img src="{{ $b->thumbnail_url }}" class="w-full h-full object-cover">@else<div class="w-full h-full bg-emerald-50 flex items-center justify-center"><span class="material-symbols-outlined text-emerald-400 text-[16px]!">newspaper</span></div>@endif
                                 </div>
                                 <span class="font-semibold text-gray-800 truncate max-w-[200px]">{{ $b->judul }}</span>
                             </div>
                         </td>
-                        <td class="px-4 py-3"><span class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-[10px] font-bold uppercase">{{ $b->jenis }}</span></td>
+                        <td class="px-4 py-3"><span class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-[10px] font-bold uppercase">{{ $b->tipe }}</span></td>
                         <td class="px-4 py-3 text-xs text-gray-500">{{ $b->kategori?->nama }}</td>
                         <td class="px-4 py-3 text-center">
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $b->is_published ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500' }}">
-                                {{ $b->is_published ? 'Published' : 'Draft' }}
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $b->status === 'published' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500' }}">
+                                {{ ucfirst($b->status) }}
                             </span>
                         </td>
                         <td class="px-4 py-3 text-center">
@@ -72,11 +72,12 @@
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">Jenis *</label>
-                            <select wire:model="jenis" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 bg-white">
+                            <label class="block text-sm font-bold text-gray-700 mb-1">Tipe *</label>
+                            <select wire:model="tipe" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 bg-white">
                                 <option value="berita">Berita</option>
                                 <option value="kegiatan">Kegiatan</option>
                             </select>
+                            @error('tipe') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-1">Kategori *</label>
@@ -99,9 +100,16 @@
                         <input type="file" wire:model="thumbnail" accept="image/*" class="w-full text-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-emerald-50 file:text-emerald-700 file:font-semibold">
                         @error('thumbnail') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                     </div>
-                    <label class="flex items-center gap-2"><input type="checkbox" wire:model="isPublished" class="rounded text-emerald-600 focus:ring-emerald-500"><span class="text-sm text-gray-600">Publish langsung</span></label>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Status Publikasi</label>
+                        <select wire:model="status" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 bg-white">
+                            <option value="draft">Draft</option>
+                            <option value="published">Published</option>
+                        </select>
+                        @error('status') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
                     <button type="submit" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-bold rounded-xl hover:from-emerald-700 hover:to-emerald-800 shadow-lg transition-all">
-                        {{ $editId ? 'Simpan' : 'Publish Berita' }}
+                        {{ $editId ? 'Simpan Perubahan' : 'Simpan Berita' }}
                     </button>
                 </form>
             </div>

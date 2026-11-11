@@ -32,7 +32,7 @@ class ForceChangePasswordController extends Controller
             'must_change_password' => false,
         ]);
 
-        return redirect()->route($user->isAdmin() ? 'admin.dashboard' : ($user->role->isMitra() ? 'mitra.dashboard' : 'home'))
+        return redirect()->route($user->isAdmin() ? 'admin.dashboard' : ($user->role?->isMitra() ? 'mitra.dashboard' : 'home'))
             ->with('success', 'Password berhasil diubah!');
     }
 }

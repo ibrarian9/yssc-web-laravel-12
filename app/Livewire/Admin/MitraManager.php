@@ -201,6 +201,9 @@ class MitraManager extends Component
                         'email_verified_at' => now(),
                     ]);
                     $userId = $newUser->id;
+                } elseif ($existingUser->isAdmin()) {
+                    $this->addError('email', 'Email tersebut terdaftar sebagai akun Admin sistem dan tidak dapat diubah menjadi akun Mitra.');
+                    return;
                 } else {
                     $userId = $existingUser->id;
                     $existingUser->update(['role' => UserRole::Mitra]);
@@ -246,6 +249,11 @@ class MitraManager extends Component
 
         if (!$user) {
             $user = User::where('email', $mitra->email)->first();
+            if ($user && $user->isAdmin()) {
+                session()->flash('error', 'Email mitra bertabrakan dengan akun Admin sistem sehingga tidak dapat ditautkan otomatis.');
+                $this->closeDetail();
+                return;
+            }
             if (!$user) {
                 $user = User::create([
                     'name' => $mitra->nama_perusahaan,

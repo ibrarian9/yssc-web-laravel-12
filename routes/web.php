@@ -110,14 +110,18 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'must-change-passwor
     // Download private mitra documents
     Route::get('/mitra/{mitra}/dokumen/{type}', function (Mitra $mitra, string $type) {
             $path = $type === 'npwp' ? $mitra->dokumen_npwp : $mitra->dokumen_legalitas;
-            abort_unless($path && Storage::disk('local')->exists($path), 404);
+            abort_unless($path, 404);
+
+            $disk = Storage::disk('local')->exists($path) ? 'local'
+                  : (Storage::disk('public')->exists($path) ? 'public' : null);
+            abort_unless($disk, 404);
 
             $extension = pathinfo($path, PATHINFO_EXTENSION) ?: 'pdf';
             $label = $type === 'npwp' ? 'dokumen_npwp' : 'dokumen_legalitas';
             $safeName = Str::slug($mitra->nama_perusahaan);
             $displayName = "{$label}_{$safeName}.{$extension}";
 
-            return Storage::disk('local')->response($path, $displayName);
+            return Storage::disk($disk)->response($path, $displayName);
         }
         )->name('mitra.dokumen')->where('type', 'npwp|legalitas');
 

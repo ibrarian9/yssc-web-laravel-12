@@ -3,8 +3,8 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Kategori;
+use App\Support\UniqueSlug;
 use Livewire\Component;
-use Illuminate\Support\Str;
 
 class KategoriManager extends Component
 {
@@ -43,10 +43,14 @@ class KategoriManager extends Component
     public function save(): void
     {
         $this->validate();
-        $data = ['nama' => $this->nama, 'slug' => Str::slug($this->nama), 'deskripsi' => $this->deskripsi ?: null, 'warna' => $this->warna];
+        $data = ['nama' => $this->nama, 'deskripsi' => $this->deskripsi ?: null, 'warna' => $this->warna];
 
         if ($this->isEditing) {
-            Kategori::findOrFail($this->editId)->update($data);
+            $item = Kategori::findOrFail($this->editId);
+            if ($item->nama !== $this->nama) {
+                $data['slug'] = UniqueSlug::generate(Kategori::class, $this->nama, $item->id);
+            }
+            $item->update($data);
             session()->flash('success', 'Kategori berhasil diperbarui.');
         } else {
             Kategori::create($data);

@@ -4,10 +4,10 @@ namespace App\Livewire\Admin;
 
 use App\Models\Profile;
 use App\Models\ProgramDonasi;
+use App\Support\UniqueSlug;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
-use Illuminate\Support\Str;
 
 class ProgramDonasiManager extends Component
 {
@@ -132,7 +132,6 @@ class ProgramDonasiManager extends Component
 
         $data = [
             'judul' => $this->judul,
-            'slug' => Str::slug($this->judul),
             'deskripsi' => $this->deskripsi,
             'target_nominal' => $this->target_nominal,
             'status' => $this->status,
@@ -146,7 +145,11 @@ class ProgramDonasiManager extends Component
         }
 
         if ($this->isEditing) {
-            ProgramDonasi::findOrFail($this->editId)->update($data);
+            $program = ProgramDonasi::findOrFail($this->editId);
+            if ($program->judul !== $this->judul) {
+                $data['slug'] = UniqueSlug::generate(ProgramDonasi::class, $this->judul, $program->id, true);
+            }
+            $program->update($data);
             session()->flash('success', 'Program donasi berhasil diperbarui.');
         } else {
             ProgramDonasi::create($data);

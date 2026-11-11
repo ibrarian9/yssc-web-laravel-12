@@ -29,6 +29,7 @@ class MitraProgramManager extends Component
             'deskripsi' => 'required|string',
             'targetNominal' => 'required|numeric|min:100000',
             'tanggalSelesai' => 'nullable|date|after:today',
+            'status' => 'required|in:draft,aktif,selesai',
             'thumbnail' => $this->editId ? 'nullable|image|max:2048' : 'required|image|max:2048',
         ];
     }
@@ -48,7 +49,7 @@ class MitraProgramManager extends Component
         $this->editId = $program->id;
         $this->judul = $program->judul;
         $this->deskripsi = $program->deskripsi;
-        $this->targetNominal = $program->target_nominal;
+        $this->targetNominal = (string) $program->target_nominal;
         $this->tanggalSelesai = $program->tanggal_selesai?->format('Y-m-d') ?? '';
         $this->status = $program->status;
         $this->showForm = true;
@@ -59,12 +60,12 @@ class MitraProgramManager extends Component
         $this->validate();
 
         $mitra = $this->getMitra();
+        abort_unless($mitra, 403, 'Profil mitra tidak ditemukan.');
+
         $data = [
             'judul' => $this->judul,
-            'slug' => Str::slug($this->judul) . '-' . time(),
             'deskripsi' => $this->deskripsi,
             'target_nominal' => $this->targetNominal,
-            'tanggal_mulai' => now(),
             'tanggal_selesai' => $this->tanggalSelesai ?: null,
             'status' => $this->status,
             'mitra_id' => $mitra->id,
@@ -76,9 +77,12 @@ class MitraProgramManager extends Component
 
         if ($this->editId) {
             $program = $this->getOwnProgram($this->editId);
-            $program?->update($data);
+            abort_unless($program, 403);
+            $program->update($data);
             session()->flash('success', 'Program berhasil diperbarui.');
         } else {
+            $data['slug'] = Str::slug($this->judul) . '-' . Str::lower(Str::random(5));
+            $data['tanggal_mulai'] = now();
             ProgramDonasi::create($data);
             session()->flash('success', 'Program berhasil dibuat.');
         }

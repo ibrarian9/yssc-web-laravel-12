@@ -15,7 +15,7 @@
             <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex items-center gap-5">
                 <div class="w-16 h-16 rounded-xl overflow-hidden bg-gray-100 shrink-0">
                     @if($program->thumbnail)
-                        <img src="{{ Storage::url($program->thumbnail) }}" class="w-full h-full object-cover">
+                        <img src="{{ $program->thumbnail_url }}" class="w-full h-full object-cover">
                     @else
                         <div class="w-full h-full bg-emerald-100 flex items-center justify-center"><span class="material-symbols-outlined text-emerald-500">volunteer_activism</span></div>
                     @endif

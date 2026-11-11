@@ -5,6 +5,7 @@ namespace App\Livewire\Mitra;
 use App\Models\Berita;
 use App\Models\Kategori;
 use App\Models\Mitra;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -19,9 +20,9 @@ class MitraBeritaManager extends Component
     public string $judul = '';
     public string $konten = '';
     public string $kategoriId = '';
-    public string $jenis = 'berita';
+    public string $tipe = 'berita';
     public $thumbnail;
-    public bool $isPublished = false;
+    public string $status = 'draft';
 
     protected function rules()
     {
@@ -29,14 +30,18 @@ class MitraBeritaManager extends Component
             'judul' => 'required|string|max:255',
             'konten' => 'required|string',
             'kategoriId' => 'required|exists:kategori,id',
-            'jenis' => 'required|in:berita,kegiatan',
+            'tipe' => 'required|in:berita,kegiatan',
+            'status' => 'required|in:draft,published',
             'thumbnail' => $this->editId ? 'nullable|image|max:2048' : 'required|image|max:2048',
         ];
     }
 
     public function create(): void
     {
-        $this->reset(['editId', 'judul', 'konten', 'kategoriId', 'jenis', 'thumbnail', 'isPublished']);
+        $this->reset(['editId', 'judul', 'konten', 'kategoriId', 'thumbnail']);
+        $this->tipe = 'berita';
+        $this->status = 'draft';
+        $this->resetErrorBag();
         $this->showForm = true;
     }
 
@@ -48,9 +53,11 @@ class MitraBeritaManager extends Component
         $this->editId = $berita->id;
         $this->judul = $berita->judul;
         $this->konten = $berita->konten;
-        $this->kategoriId = $berita->kategori_id;
-        $this->jenis = $berita->jenis;
-        $this->isPublished = $berita->is_published;
+        $this->kategoriId = (string) ($berita->kategori_id ?? '');
+        $this->tipe = $berita->tipe ?? 'berita';
+        $this->status = $berita->status ?? 'draft';
+        $this->thumbnail = null;
+        $this->resetErrorBag();
         $this->showForm = true;
     }
 
@@ -60,32 +67,38 @@ class MitraBeritaManager extends Component
 
         $data = [
             'judul' => $this->judul,
-            'slug' => \Str::slug($this->judul) . '-' . time(),
             'konten' => $this->konten,
             'kategori_id' => $this->kategoriId,
-            'jenis' => $this->jenis,
-            'is_published' => $this->isPublished,
+            'tipe' => $this->tipe,
+            'status' => $this->status,
             'user_id' => auth()->id(),
         ];
 
-        if ($this->isPublished) {
-            $data['published_at'] = now();
-        }
-
         if ($this->thumbnail) {
+            if ($this->editId) {
+                $existing = $this->getOwnBerita($this->editId);
+                if ($existing?->thumbnail && !str_starts_with($existing->thumbnail, 'http')) {
+                    Storage::disk('public')->delete($existing->thumbnail);
+                }
+            }
             $data['thumbnail'] = $this->thumbnail->store('berita', 'public');
         }
 
         if ($this->editId) {
             $berita = $this->getOwnBerita($this->editId);
-            $berita?->update($data);
+            abort_unless($berita, 403);
+            $berita->update($data);
             session()->flash('success', 'Berita berhasil diperbarui.');
         } else {
+            $data['slug'] = Str::slug($this->judul) . '-' . Str::lower(Str::random(5));
             Berita::create($data);
             session()->flash('success', 'Berita berhasil dibuat.');
         }
 
         $this->showForm = false;
+        $this->reset(['editId', 'judul', 'konten', 'kategoriId', 'thumbnail']);
+        $this->tipe = 'berita';
+        $this->status = 'draft';
     }
 
     public function deleteBerita(int $id): void

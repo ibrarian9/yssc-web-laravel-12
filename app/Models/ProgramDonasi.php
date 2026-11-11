@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\UniqueSlug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
@@ -58,11 +59,7 @@ class ProgramDonasi extends Model
 
         static::creating(function ($program) {
             if (empty($program->slug)) {
-                $program->slug = Str::slug($program->judul);
-                $count = static::withTrashed()->where('slug', $program->slug)->count();
-                if ($count > 0) {
-                    $program->slug .= '-' . ($count + 1);
-                }
+                $program->slug = UniqueSlug::generate(static::class, (string) $program->judul, withTrashed: true);
             }
         });
     }
@@ -103,7 +100,18 @@ class ProgramDonasi extends Model
     {
         if (!$this->tanggal_selesai) return null;
         $diff = now()->diffInDays($this->tanggal_selesai, false);
-        return max(0, $diff);
+        return (int) max(0, $diff);
+    }
+
+    public function getThumbnailUrlAttribute(): ?string
+    {
+        if (empty($this->thumbnail)) {
+            return null;
+        }
+
+        return str_starts_with($this->thumbnail, 'http')
+            ? $this->thumbnail
+            : asset('storage/' . $this->thumbnail);
     }
 
     public function getJumlahDonaturAttribute(): int

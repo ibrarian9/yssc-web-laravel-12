@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\UniqueSlug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
@@ -55,12 +56,7 @@ class Berita extends Model
 
         static::creating(function ($berita) {
             if (empty($berita->slug)) {
-                $berita->slug = Str::slug($berita->judul);
-                // Ensure unique slug
-                $count = static::withTrashed()->where('slug', $berita->slug)->count();
-                if ($count > 0) {
-                    $berita->slug .= '-' . ($count + 1);
-                }
+                $berita->slug = UniqueSlug::generate(static::class, (string) $berita->judul, withTrashed: true);
             }
         });
     }
@@ -113,5 +109,16 @@ class Berita extends Model
     {
         if ($value) return $value;
         return Str::limit(strip_tags($this->konten), 160);
+    }
+
+    public function getThumbnailUrlAttribute(): ?string
+    {
+        if (empty($this->thumbnail)) {
+            return null;
+        }
+
+        return str_starts_with($this->thumbnail, 'http')
+            ? $this->thumbnail
+            : asset('storage/' . $this->thumbnail);
     }
 }

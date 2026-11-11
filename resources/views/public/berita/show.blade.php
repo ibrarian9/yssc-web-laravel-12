@@ -4,7 +4,7 @@
 
     {{-- Hero Image --}}
     <div class="relative h-64 md:h-96 overflow-hidden">
-        <img src="{{ $berita->thumbnail ?? 'https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1600' }}"
+        <img src="{{ $berita->thumbnail_url ?? 'https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1600' }}"
              class="w-full h-full object-cover" alt="{{ $berita->judul }}">
         <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
     </div>
@@ -105,7 +105,7 @@
                                 @foreach($related as $item)
                                     <a href="{{ route($item->tipe === 'kegiatan' ? 'kegiatan.show' : 'berita.show', $item->slug) }}"
                                        class="flex gap-3 group">
-                                        <img src="{{ $item->thumbnail }}" class="w-20 h-16 object-cover rounded-lg shrink-0" alt="{{ $item->judul }}">
+                                        <img src="{{ $item->thumbnail_url ?? 'https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=400' }}" class="w-20 h-16 object-cover rounded-lg shrink-0" alt="{{ $item->judul }}">
                                         <div>
                                             <h4 class="text-sm font-semibold text-gray-700 line-clamp-2 group-hover:text-teal-600 transition">{{ $item->judul }}</h4>
                                             <p class="text-xs text-gray-400 mt-1">{{ $item->created_at->translatedFormat('d M Y') }}</p>

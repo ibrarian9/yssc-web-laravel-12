@@ -36,6 +36,11 @@ class UserManager extends Component
     public bool $showDeleteModal = false;
     public ?int $deleteUserId = null;
 
+    public function boot(): void
+    {
+        abort_unless(auth()->user()?->isSuperAdmin(), 403);
+    }
+
     protected function rules(): array
     {
         $roleValues = array_map(fn($r) => $r->value, UserRole::cases());
@@ -122,6 +127,17 @@ class UserManager extends Component
 
         if ($this->isEditing) {
             $user = User::findOrFail($this->editId);
+
+            if ($user->id === auth()->id()) {
+                if ($this->role !== UserRole::SuperAdmin->value) {
+                    $this->addError('role', 'Anda tidak dapat menurunkan role Super Admin milik Anda sendiri.');
+                    return;
+                }
+                if (! $this->is_active) {
+                    $this->addError('is_active', 'Anda tidak dapat menonaktifkan akun Anda sendiri.');
+                    return;
+                }
+            }
 
             $updateData = [
                 'name' => $this->name,

@@ -4,10 +4,10 @@ namespace App\Livewire\Admin;
 
 use App\Models\Berita;
 use App\Models\Kategori;
+use App\Support\UniqueSlug;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
-use Illuminate\Support\Str;
 
 class BeritaManager extends Component
 {
@@ -84,7 +84,6 @@ class BeritaManager extends Component
 
         $data = [
             'judul' => $this->judul,
-            'slug' => Str::slug($this->judul),
             'konten' => $this->konten,
             'tipe' => $this->tipe,
             'status' => $this->status,
@@ -100,6 +99,9 @@ class BeritaManager extends Component
 
         if ($this->isEditing) {
             $berita = Berita::findOrFail($this->editId);
+            if ($berita->judul !== $this->judul) {
+                $data['slug'] = UniqueSlug::generate(Berita::class, $this->judul, $berita->id, true);
+            }
             if (!$this->newThumbnail) {
                 unset($data['thumbnail']);
             }

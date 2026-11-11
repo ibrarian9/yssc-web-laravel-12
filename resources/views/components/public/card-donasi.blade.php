@@ -9,7 +9,7 @@
 
 <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-gray-100 flex flex-col">
     <div class="overflow-hidden h-48 relative">
-        <img src="{{ str_starts_with($program->thumbnail, 'http') ? $program->thumbnail : asset('storage/'. $program->thumbnail) }}"
+        <img src="{{ $program->thumbnail_url ?? 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=800' }}"
              class="w-full h-full object-cover group-hover:scale-110 transition duration-500"
              alt="{{ $program->judul }}" loading="lazy" decoding="async">
         @if($program->is_mendesak)

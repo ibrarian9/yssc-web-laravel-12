@@ -29,7 +29,7 @@ class MitraDashboard extends Component
         $recentDonations = $programIds->isNotEmpty()
             ? Donasi::whereIn('program_donasi_id', $programIds)
                 ->where('status_pembayaran', 'success')
-                ->with('programDonasi:id,judul')
+                ->with('program:id,judul')
                 ->latest()
                 ->take(5)
                 ->get()

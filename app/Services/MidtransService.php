@@ -13,7 +13,7 @@ class MidtransService
 
     public function __construct()
     {
-        $this->serverKey = config('midtrans.server_key');
+        $this->serverKey = (string) config('midtrans.server_key', '');
         $this->baseUrl = config('midtrans.is_production')
             ? 'https://app.midtrans.com/snap/v1'
             : 'https://app.sandbox.midtrans.com/snap/v1';
@@ -97,6 +97,6 @@ class MidtransService
             $orderId . $statusCode . $grossAmount . $this->serverKey
         );
 
-        return $signatureKey === $expectedSignature;
+        return hash_equals($expectedSignature, (string) $signatureKey);
     }
 }

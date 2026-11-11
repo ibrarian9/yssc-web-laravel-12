@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
+use App\Support\UniqueSlug;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
@@ -36,7 +36,7 @@ class Kategori extends Model
 
         static::creating(function ($kategori) {
             if (empty($kategori->slug)) {
-                $kategori->slug = Str::slug($kategori->nama);
+                $kategori->slug = UniqueSlug::generate(static::class, (string) $kategori->nama);
             }
         });
     }

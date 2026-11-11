@@ -54,8 +54,8 @@ class MitraRegistrationForm extends Component
     {
         $this->validate();
 
-        $npwpPath = $this->dokumenNpwp->store('mitra/npwp', 'public');
-        $legalitasPath = $this->dokumenLegalitas->store('mitra/legalitas', 'public');
+        $npwpPath = $this->dokumenNpwp->store('mitra/npwp', 'local');
+        $legalitasPath = $this->dokumenLegalitas->store('mitra/legalitas', 'local');
 
         $mitra = Mitra::create([
             'jenis_mitra' => $this->jenisMitra,
@@ -71,7 +71,11 @@ class MitraRegistrationForm extends Component
         // Send notification to all admin users
         $admins = User::whereIn('role', ['superadmin', 'admin'])->pluck('email');
         foreach ($admins as $adminEmail) {
-            Mail::to($adminEmail)->send(new MitraRegisteredNotification($mitra));
+            try {
+                Mail::to($adminEmail)->send(new MitraRegisteredNotification($mitra));
+            } catch (\Throwable $e) {
+                // Keep registration flow resilient if mail transport is unavailable
+            }
         }
 
         $this->submitted = true;

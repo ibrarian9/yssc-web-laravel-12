@@ -104,6 +104,14 @@ class HeroSection extends Model
         });
     }
 
+    public static function clearCache(): void
+    {
+        static::$memo = [];
+        foreach (array_keys(static::$defaultPages) as $key) {
+            Cache::forget("hero_section_{$key}");
+        }
+    }
+
     /**
      * Get or create hero configuration for a page key.
      */

@@ -2,7 +2,7 @@
 
 <article class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-gray-100">
     <div class="overflow-hidden h-48 sm:h-52 relative">
-        <img src="{{ str_starts_with($berita->thumbnail, 'http') ? $berita->thumbnail : asset('storage/'. $berita->thumbnail) }}"
+        <img src="{{ $berita->thumbnail_url ?? 'https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=800' }}"
              class="w-full h-full object-cover group-hover:scale-110 transition duration-500"
              alt="{{ $berita->judul }}" loading="lazy" decoding="async">
         @if($berita->kategori)

@@ -3,6 +3,7 @@
 namespace App\Livewire\PublicPages;
 
 use App\Models\Donasi;
+use App\Models\Profile;
 use App\Models\ProgramDonasi;
 use App\Services\MidtransService;
 use Livewire\Component;
@@ -60,7 +61,16 @@ class DonasiForm extends Component
         $this->validate();
         $this->errorMsg = null;
 
+        if (! (Profile::getCached()?->is_donasi_enabled ?? true)) {
+            $this->errorMsg = 'Layanan donasi saat ini sedang dinonaktifkan sementara.';
+            return;
+        }
+
         $program = ProgramDonasi::findOrFail($this->programId);
+        if ($program->status !== 'aktif') {
+            $this->errorMsg = 'Program donasi ini sudah tidak menerima donasi baru.';
+            return;
+        }
 
         // Create pending donation record
         $donasi = Donasi::create([

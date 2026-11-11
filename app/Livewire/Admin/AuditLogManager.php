@@ -16,6 +16,11 @@ class AuditLogManager extends Component
     public bool $showDetail = false;
     public ?int $selectedId = null;
 
+    public function boot(): void
+    {
+        abort_unless(auth()->user()?->isSuperAdmin(), 403);
+    }
+
     public function updatingSearch(): void { $this->resetPage(); }
     public function updatingFilterEvent(): void { $this->resetPage(); }
     public function updatingFilterSubject(): void { $this->resetPage(); }

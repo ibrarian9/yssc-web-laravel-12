@@ -10,8 +10,18 @@ class IsMitra
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->user() || !$request->user()->role->isMitra()) {
+        $user = $request->user();
+
+        if (! $user || ! $user->role?->isMitra()) {
             abort(403, 'Akses khusus Mitra.');
+        }
+
+        if (! $user->is_active) {
+            auth()->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('login')->with('error', 'Akun Anda telah dinonaktifkan.');
         }
 
         return $next($request);

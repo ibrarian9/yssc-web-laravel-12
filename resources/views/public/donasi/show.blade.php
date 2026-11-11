@@ -4,13 +4,13 @@
     @php
         $terkumpul = $program->donasiSuccess()->sum('nominal');
         $persentase = $program->target_nominal > 0 ? min(100, round(($terkumpul / $program->target_nominal) * 100, 1)) : 0;
-        $sisaHari = $program->tanggal_selesai ? max(0, now()->diffInDays($program->tanggal_selesai, false)) : null;
+        $sisaHari = $program->sisa_hari;
         $jumlahDonatur = $program->donasiSuccess()->count();
     @endphp
 
     {{-- Hero --}}
     <div class="relative h-64 md:h-80 overflow-hidden">
-        <img src="{{ $program->thumbnail ?? 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=1600' }}"
+        <img src="{{ $program->thumbnail_url ?? 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=1600' }}"
              class="w-full h-full object-cover" alt="{{ $program->judul }}">
         <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
     </div>
